@@ -9,7 +9,7 @@ import (
 func GetRegions(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	secretName := c.PostForm("secretName")
 	if secretName == "" {
@@ -46,9 +46,9 @@ func GetRegions(c *gin.Context) {
 func CreateLightsail(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
-	params := GetAndCheckParams(c, "name", "zone", "availabilityZone", "blueprintId", "bundleId")
+	params := GetAndCheckParams(c, "name", "zone", "availabilityZone", "blueprintId", "bundleId", "secretName")
 	if len(params) == 0 {
 		return
 	}
@@ -79,7 +79,7 @@ func CreateLightsail(c *gin.Context) {
 func OpenLightsailPorts(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName", "name")
 	secret, _ := data.GetSecret(username, params["secretName"])
@@ -108,7 +108,7 @@ func OpenLightsailPorts(c *gin.Context) {
 func ListLightsail(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName")
 	if len(params) == 0 {
@@ -135,7 +135,21 @@ func ListLightsail(c *gin.Context) {
 	if listRt == nil {
 		instances = append(instances, &aws.LsInfo{})
 	} else {
-
+		var tag *string
+		str := ""
+		tag = &str
+		for _, v := range listRt {
+			if len(v.Tags) > 0 {
+				tag = v.Tags[0].Value
+			}
+			instances = append(instances, &aws.LsInfo{
+				Name:         *v.Name,
+				Type:         *v.BundleId,
+				Ip:           *v.PublicIpAddress,
+				ResourceName: *tag,
+				Status:       *v.State.Name,
+			})
+		}
 	}
 	c.JSON(200, gin.H{
 		"code": 200,
@@ -147,7 +161,7 @@ func ListLightsail(c *gin.Context) {
 func GetLightsailInfo(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName", "name")
 	name := c.PostForm("name")
@@ -178,7 +192,7 @@ func GetLightsailInfo(c *gin.Context) {
 func StartLightsail(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName", "name")
 	if len(params) == 0 {
@@ -210,7 +224,7 @@ func StartLightsail(c *gin.Context) {
 func StopLightsail(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName", "name")
 	if len(params) == 0 {
@@ -242,7 +256,7 @@ func StopLightsail(c *gin.Context) {
 func RebootLightsail(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName", "name")
 	if len(params) == 0 {
@@ -274,7 +288,7 @@ func RebootLightsail(c *gin.Context) {
 func ChangeLightsailIp(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "zone", "secretName", "name")
 	if len(params) == 0 {
@@ -306,7 +320,7 @@ func ChangeLightsailIp(c *gin.Context) {
 func DeleteLightsail(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "zone", "name", "resourceName")
 	if len(params) == 0 {

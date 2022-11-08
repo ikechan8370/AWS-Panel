@@ -94,6 +94,9 @@ export default {
             if (response.data.isAdmin) {
               this.$cookie.set('isAdmin', 'true')
             }
+            if (response.data.loginSession) {
+              this.$cookie.set('loginSession', response.data.loginSession)
+            }
             this.text = "登陆成功，即将跳转到主页..."
             setTimeout(() => {
               this.$router.push("/")

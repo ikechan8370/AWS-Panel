@@ -20,7 +20,8 @@ type Ec2Info struct {
 func (p *Aws) CreateEc2(Ami, Ec2Type, Name, userdata string, DiskSize int64) (*Ec2Info, error) {
 	svc := ec2.New(p.Sess)
 	dateName := Name + time.Unix(time.Now().Unix(), 0).Format("_2006-01-02_15:04:05")
-	key, keyErr := p.CreateKey(dateName + "_key")
+	keyName := dateName + "_key"
+	key, keyErr := p.CreateKey(keyName)
 	if keyErr != nil {
 		return nil, fmt.Errorf("create key error: %v", keyErr)
 	} //创建ssh密钥
@@ -60,7 +61,7 @@ func (p *Aws) CreateEc2(Ami, Ec2Type, Name, userdata string, DiskSize int64) (*E
 		InstanceType:        &Ec2Type,
 		MinCount:            aws.Int64(1),
 		MaxCount:            aws.Int64(1),
-		KeyName:             &dateName,
+		KeyName:             &keyName,
 		BlockDeviceMappings: ebs,
 		SecurityGroupIds:    []*string{secRt.GroupId},
 		UserData:            &userdata,

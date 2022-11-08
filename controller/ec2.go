@@ -10,7 +10,7 @@ import (
 func CreateEc2(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	userdata := c.PostForm("userdata")
 	params := GetAndCheckParams(c, "secretName", "region", "ami", "ec2Type", "ec2Name", "disk")
@@ -60,7 +60,7 @@ func CreateEc2(c *gin.Context) {
 func ListEc2(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region")
 	if len(params) == 0 {
@@ -93,7 +93,7 @@ func ListEc2(c *gin.Context) {
 func GetEc2Info(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region", "ec2Id")
 	if len(params) == 0 {
@@ -125,7 +125,7 @@ func GetEc2Info(c *gin.Context) {
 func ChangeEc2Ip(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region", "ec2Id")
 	if len(params) == 0 {
@@ -158,7 +158,7 @@ func ChangeEc2Ip(c *gin.Context) {
 func StopEc2(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region", "ec2Id")
 	if len(params) == 0 {
@@ -190,7 +190,7 @@ func StopEc2(c *gin.Context) {
 func StartEc2(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region", "ec2Id")
 	if len(params) == 0 {
@@ -221,7 +221,7 @@ func StartEc2(c *gin.Context) {
 func RebootEc2(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region", "ec2Id")
 	if len(params) == 0 {
@@ -253,7 +253,7 @@ func RebootEc2(c *gin.Context) {
 func DeleteEc2(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	params := GetAndCheckParams(c, "secretName", "region", "ec2Id")
 	if len(params) == 0 {

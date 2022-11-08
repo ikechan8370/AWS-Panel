@@ -25,8 +25,9 @@ func (p *Router) LoadRoute() {
 	}*/
 	p.router.Use(sessions.Sessions("loginSession", store))
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://127.0.0.1:8080"}
+	config.AllowOrigins = []string{"http://127.0.0.1:8080", "http://localhost:8080"}
 	config.AllowCredentials = true
+	config.AllowHeaders = []string{"loginSession"}
 	p.router.Use(cors.New(config))
 
 	//User

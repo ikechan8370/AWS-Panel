@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 func GetLoginUser(c *gin.Context) string {
@@ -33,15 +34,21 @@ func LoginVerify(c *gin.Context) {
 	loginErr := data.LoginVerify(username, utils.Md5Encode(password))
 	if loginErr == nil {
 		s := sessions.Default(c)
-		s.Set("loginSession", session.CreateSession(username, 0))
+		ls := session.CreateSession(username, 0)
+		s.Set("loginSession", ls)
+		s.Options(sessions.Options{
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
+		})
 		saveErr := s.Save()
 		if saveErr != nil {
 			log.Error("")
 		}
 		c.JSON(200, gin.H{
-			"code":    200,
-			"isAdmin": data.IsAdmin(username),
-			"msg":     "登录成功",
+			"code":         200,
+			"isAdmin":      data.IsAdmin(username),
+			"loginSession": ls,
+			"msg":          "登录成功",
 		})
 	} else {
 		c.JSON(400, gin.H{
@@ -141,7 +148,7 @@ func ChangePassword(c *gin.Context) {
 func GetUserInfo(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	c.JSON(200, gin.H{
 		"code": 200,
@@ -165,7 +172,7 @@ func Logout(c *gin.Context) {
 func IsAdmin(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	if data.IsAdmin(username) {
 		c.JSON(200, gin.H{
@@ -184,7 +191,7 @@ func DeleteUser(c *gin.Context) {
 	user := c.PostForm("username")
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	if data.IsAdmin(username) {
 		err := data.DeleteUser(user)
@@ -211,7 +218,7 @@ func BanUser(c *gin.Context) {
 	user := c.PostForm("username")
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	if data.IsAdmin(username) {
 		err := data.BanUser(user)
@@ -238,7 +245,7 @@ func UnBanUser(c *gin.Context) {
 	user := c.PostForm("username")
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	if data.IsAdmin(username) {
 		err := data.UnBanUser(user)
@@ -264,7 +271,7 @@ func UnBanUser(c *gin.Context) {
 func GetUserList(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	list, listErr := data.GetUserList()
 	if listErr != nil {

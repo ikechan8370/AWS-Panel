@@ -266,8 +266,8 @@
 </template>
 
 <script>
-import axios from "../api"
 import Lightsail from "../components/lightsail";
+import api from "../api";
 
 export default {
   name: 'Instances',
@@ -298,13 +298,15 @@ export default {
       {text: '澳大利亚', value: 'ap-southeast-6'},
       {text: '新加坡', value: 'ap-southeast-1'},
       {text: '澳洲', value: 'ap-southeast-2'},
-      {text: '法国', value: 'eu-central-1'},
-      {text: '冰岛', value: 'eu-west-1'},
-      {text: '德国', value: 'eu-west-2'},
+      {text: '法国', value: 'eu-west-3'},
+      {text: '爱尔兰', value: 'eu-west-1'},
+      {text: '英国', value: 'eu-west-2'},
+      {text: '德国', value: 'eu-central-1'},
+      {text: '意大利', value: 'eu-south-1'},
       {text: '俄罗斯', value: 'eu-west-3'},
       {text: '印度', value: 'ap-south-1'},
-      {text: '新西兰', value: 'ap-southeast-3'},
-      {text: '马来西亚', value: 'ap-southeast-5'},
+      {text: '印度尼西亚', value: 'ap-southeast-3'},
+      // {text: '马来西亚', value: 'ap-southeast-5'},
       {text: '泰国', value: 'ap-northeast-3'},
       {text: '菲律宾', value: 'ap-southeast-4'},
       {text: '西班牙', value: 'eu-west-4'},
@@ -354,7 +356,7 @@ export default {
     loading: false,
   }),
   mounted() {
-    axios.get("/api/v1/Secret/List", {withCredentials: true}).then(response => {
+    api.get("/api/v1/Secret/List", {withCredentials: true}).then(response => {
       let tmp = []
       if (response.data.code === 200) {
         for (const v of response.data.data) {
@@ -391,7 +393,7 @@ export default {
             let data = new FormData()
             data.append("region", this.regionSelected)
             data.append("secretName", this.secretSelected)
-            axios.post('/api/v1/Ec2/List', data, {withCredentials: true}).then(response => {
+            api.post('/api/v1/Ec2/List', data, {withCredentials: true}).then(response => {
               if (response.data.code === 200) {
                 if (response.data.data == null) {
                   this.Instances = []
@@ -418,7 +420,7 @@ export default {
             data.append("ec2Type", this.typeSelected)
             data.append("ami", this.amiSelected)
             data.append("disk", this.diskSelected)
-            axios.post("/api/v1/Ec2/Create", data, {withCredentials: true}).then(response => {
+            api.post("/api/v1/Ec2/Create", data, {withCredentials: true}).then(response => {
               if (response.data.code === 200) {
                 this.messageText = '已添加至创建队列！'
                 this.sshKey = response.data.data
@@ -452,7 +454,7 @@ export default {
             data.append("region", this.regionSelected)
             data.append("secretName", this.secretSelected)
             data.append("ec2Id", item.InstanceId)
-            axios.post("/api/v1/Ec2/Start", data, {withCredentials: true}).then(response => {
+            api.post("/api/v1/Ec2/Start", data, {withCredentials: true}).then(response => {
               if (response.data.code === 200) {
                 this.messageText = '已添加至启动队列！'
                 this.refresh()
@@ -475,7 +477,7 @@ export default {
             data.append("region", this.regionSelected)
             data.append("secretName", this.secretSelected)
             data.append("ec2Id", item.InstanceId)
-            axios.post("/api/v1/Ec2/Stop", data, {withCredentials: true}).then(response => {
+            api.post("/api/v1/Ec2/Stop", data, {withCredentials: true}).then(response => {
               if (response.data.code === 200) {
                 this.messageText = '已添加至停止队列！'
                 this.refresh()
@@ -498,7 +500,7 @@ export default {
             data.append("region", this.regionSelected)
             data.append("secretName", this.secretSelected)
             data.append("ec2Id", item.InstanceId)
-            axios.post("/api/v1/Ec2/Reboot", data, {withCredentials: true}).then(response => {
+            api.post("/api/v1/Ec2/Reboot", data, {withCredentials: true}).then(response => {
               if (response.data.code === 200) {
                 this.messageText = '已添加至重启队列！'
                 this.refresh()
@@ -521,7 +523,7 @@ export default {
             data.append("region", this.regionSelected)
             data.append("secretName", this.secretSelected)
             data.append("ec2Id", item.InstanceId)
-            axios.post("/api/v1/Ec2/Delete", data, {withCredentials: true}).then(response => {
+            api.post("/api/v1/Ec2/Delete", data, {withCredentials: true}).then(response => {
               if (response.data.code === 200) {
                 this.messageText = '已添加至删除队列！'
                 this.refresh()

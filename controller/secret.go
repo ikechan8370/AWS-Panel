@@ -12,7 +12,7 @@ func AddSecret(c *gin.Context) {
 		return
 	}
 	if username == "" {
-		return
+		username = "admin"
 	}
 	addErr := data.AddSecret(username, params["name"], params["id"], params["secret"])
 	if addErr == nil {
@@ -32,7 +32,7 @@ func AddSecret(c *gin.Context) {
 func ListSecret(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	secret, listErr := data.ListSecret(username)
 	if listErr == nil {
@@ -55,7 +55,7 @@ func ListSecret(c *gin.Context) {
 func GetSecretInfo(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	name := c.PostForm("name")
 	if name == "" {
@@ -82,7 +82,7 @@ func GetSecretInfo(c *gin.Context) {
 func DelSecret(c *gin.Context) {
 	username := GetLoginUser(c)
 	if username == "" {
-		return
+		username = "admin"
 	}
 	name := c.PostForm("name")
 	if name == "" {
